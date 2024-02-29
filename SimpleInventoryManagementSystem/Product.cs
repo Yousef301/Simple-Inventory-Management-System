@@ -43,6 +43,8 @@ public class Product
         else Console.WriteLine($"Can't remove {amount}. Available quantity is {Quantity}");
     }
 
-    public void ProductDetails() =>
+    public void ProductDetails()
+    {
         Console.WriteLine($"Product name -> {Name}\nQuantity -> {Quantity}\nPrice -> {Price}");
+    }
 }

@@ -65,6 +65,11 @@ public class Menu
                     }
 
                     break;
+
+                case "5":
+                    SearchForProduct();
+                    break;
+
                 case "6":
                     break;
 
@@ -140,8 +145,8 @@ public class Menu
         Console.Clear();
         string name = ReadFromUser("name");
         int index = _inventory.GetProductIndexByName(name);
-        if (index == -1) Console.WriteLine("Items isn't in the inventory.");
-        _inventory.Products[index].ProductDetails();
+        if (index == -1) Console.WriteLine($"{name} isn't in the inventory.");
+        else _inventory.Products[index].ProductDetails();
     }
 
     private static void MainMenu()

@@ -22,7 +22,6 @@ public class Inventory
 
     public void ViewAllProducts()
     {
-        Console.Clear();
         foreach (var product in _products)
         {
             product.ProductDetails();
@@ -36,7 +35,7 @@ public class Inventory
     }
 
     public void DeleteProduct(int index) => _products.RemoveAt(index);
-
+    
     public int GetProductIndexByName(string name)
     {
         var index = _products.FindIndex(p => p.Name == name);
