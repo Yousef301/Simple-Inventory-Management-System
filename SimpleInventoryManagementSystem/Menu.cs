@@ -45,6 +45,7 @@ public class Menu
                     break;
 
                 case "2":
+                    Console.Clear();
                     _inventory.ViewAllProducts();
                     break;
 

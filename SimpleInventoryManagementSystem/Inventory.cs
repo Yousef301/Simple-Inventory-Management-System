@@ -22,6 +22,14 @@ public class Inventory
 
     public void ViewAllProducts()
     {
+        if (_products.Count == 0)
+        {
+            Console.Clear();
+            Console.WriteLine("Inventory is empty.");
+            return;
+        }
+
+        Console.WriteLine("Inventory Contains:");
         int itemCnt = 1;
         foreach (var product in _products)
         {
@@ -31,7 +39,7 @@ public class Inventory
             itemCnt++;
         }
     }
-    
+
     public void DeleteProduct(int index) => _products.RemoveAt(index);
 
     public int GetProductIndexByName(string name)
