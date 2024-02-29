@@ -42,4 +42,7 @@ public class Product
         if (Quantity - amount > 0) Quantity += amount;
         else Console.WriteLine($"Can't remove {amount}. Available quantity is {Quantity}");
     }
+
+    public void ProductDetails() =>
+        Console.WriteLine($"Product name -> {Name}\nQuantity -> {Quantity}\nPrice -> {Price}");
 }
