@@ -11,8 +11,8 @@ public class Inventory
 
     public void AddProduct(Product product)
     {
-        var matches = _products.Where(p => String.Equals(p.Name, product.Name, StringComparison.CurrentCulture));
-        if (matches.Any()) Console.WriteLine($"{product.Name} is already in the inventory.");
+        int index = GetProductIndexByName(product.Name);
+        if (index != -1) Console.WriteLine($"{product.Name} is already in the inventory.");
         else
         {
             _products.Add(product);
@@ -28,5 +28,15 @@ public class Inventory
             Console.WriteLine("-----------------------------\n");
         }
     }
-    
+
+    public void EditProduct(Product newProduct, int index)
+    {
+        if (index != -1) _products[index] = newProduct;
+    }
+
+    public int GetProductIndexByName(string name)
+    {
+        var index = _products.FindIndex(p => p.Name == name);
+        return index;
+    }
 }
