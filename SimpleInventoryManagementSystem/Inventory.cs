@@ -22,23 +22,21 @@ public class Inventory
 
     public void ViewAllProducts()
     {
+        int itemCnt = 1;
         foreach (var product in _products)
         {
+            Console.WriteLine($"Item {itemCnt}:");
             product.ProductDetails();
-            Console.WriteLine("-----------------------------\n");
+            Console.WriteLine();
+            itemCnt++;
         }
     }
-
-    public void EditProduct(Product newProduct, int index)
-    {
-        if (index != -1) _products[index] = newProduct;
-    }
-
-    public void DeleteProduct(int index) => _products.RemoveAt(index);
     
+    public void DeleteProduct(int index) => _products.RemoveAt(index);
+
     public int GetProductIndexByName(string name)
     {
-        var index = _products.FindIndex(p => p.Name == name);
+        var index = _products.FindIndex(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
         return index;
     }
 }

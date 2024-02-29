@@ -9,9 +9,11 @@ public class Menu
         var choice = "0";
         while (Int32.Parse(choice) != 6)
         {
+            Console.WriteLine("======================================================");
             MainMenu();
             Console.WriteLine("\nEnter your selection: ");
             choice = Console.ReadLine();
+            if (choice == "" || !int.TryParse(choice, out _)) choice = "0";
 
             switch (choice)
             {
@@ -47,6 +49,7 @@ public class Menu
                     break;
 
                 case "3":
+                    SearchAndEdit();
                     break;
 
                 case "4":
@@ -80,19 +83,13 @@ public class Menu
         }
     }
 
-    private static string ReadFromUser(string attribute)
+    private static void SearchForProduct()
     {
         Console.Clear();
-        Console.WriteLine($"Enter product {attribute}: ");
-        string? value = Console.ReadLine();
-        while (string.IsNullOrEmpty(value))
-        {
-            Console.Clear();
-            Console.WriteLine($"Enter product {attribute}: ");
-            value = Console.ReadLine();
-        }
-
-        return value;
+        string name = ReadFromUser("name");
+        int index = _inventory.GetProductIndexByName(name);
+        if (index == -1) Console.WriteLine($"{name} isn't in the inventory.");
+        else _inventory.Products[index].ProductDetails();
     }
 
     private static void SearchAndEdit()
@@ -103,6 +100,45 @@ public class Menu
 
         if (index != -1)
         {
+            EditMenu();
+
+            Console.WriteLine("Enter your choice: ");
+            var choice = Console.ReadLine();
+
+            switch (choice)
+            {
+                case "1":
+                    string newName = ReadFromUser("name");
+                    _inventory.Products[index] = new Product(newName, _inventory.Products[index].Price,
+                        _inventory.Products[index].Quantity);
+
+                    break;
+                case "2":
+                    string newPrice = ReadFromUser("price");
+                    double newPriceDouble = CheckIfInt(newPrice);
+
+                    _inventory.Products[index] = new Product(_inventory.Products[index].Name, newPriceDouble,
+                        _inventory.Products[index].Quantity);
+
+                    break;
+                case "3":
+                    string newQuantity = ReadFromUser("quantity");
+                    int newQuantityInt = CheckIfInt(newQuantity);
+
+                    _inventory.Products[index] = new Product(_inventory.Products[index].Name,
+                        _inventory.Products[index].Price,
+                        newQuantityInt);
+
+                    break;
+                default:
+                    Console.WriteLine("Unavailable input...");
+                    break;
+            }
+        }
+        else
+        {
+            Console.Clear();
+            Console.WriteLine($"{name} isn't in the inventory");
         }
     }
 
@@ -140,13 +176,19 @@ public class Menu
         return quantity;
     }
 
-    private static void SearchForProduct()
+    private static string ReadFromUser(string attribute)
     {
         Console.Clear();
-        string name = ReadFromUser("name");
-        int index = _inventory.GetProductIndexByName(name);
-        if (index == -1) Console.WriteLine($"{name} isn't in the inventory.");
-        else _inventory.Products[index].ProductDetails();
+        Console.WriteLine($"Enter product {attribute}: ");
+        string? value = Console.ReadLine();
+        while (string.IsNullOrEmpty(value))
+        {
+            Console.Clear();
+            Console.WriteLine($"Enter product {attribute}: ");
+            value = Console.ReadLine();
+        }
+
+        return value;
     }
 
     private static void MainMenu()
@@ -154,5 +196,12 @@ public class Menu
         Console.WriteLine("Simple Inventory Management System\n\nSelect From the Following:\n" +
                           "1. Add a product.\n2. View all products\n3. Edit a product.\n" +
                           "4. Delete a product.\n5. Search for a product.\n6. Exit.");
+    }
+
+    private static void EditMenu()
+    {
+        Console.Clear();
+        Console.WriteLine(
+            "Select from the following\n1. Edit product name.\n2. Edit product price\n3. Edit product quantity\n");
     }
 }
