@@ -19,4 +19,14 @@ public class Inventory
             Console.WriteLine($"{product.Name} is added successfully.");
         }
     }
+
+    public void ViewAllProducts()
+    {
+        foreach (var product in _products)
+        {
+            product.ProductDetails();
+            Console.WriteLine("-----------------------------\n");
+        }
+    }
+    
 }
