@@ -52,24 +52,16 @@ public class Menu
                     break;
 
                 case "3":
-                    SearchAndEdit();
+                    Console.Clear();
+                    var (itemIndex, itemName) = SearchByName();
+
+                    EditByIndex(itemIndex, itemName);
                     break;
 
                 case "4":
-                    string nameDelete = ReadFromUser("name");
-                    int indexDelete = _inventory.GetProductIndexByName(nameDelete);
-                    if (indexDelete != -1)
-                    {
-                        Console.Clear();
-                        _inventory.DeleteProduct(indexDelete);
-                        Console.WriteLine("Item deleted successfully.");
-                    }
-                    else
-                    {
-                        Console.Clear();
-                        Log.ItemNotExist(nameDelete);
-                    }
+                    var (itemIndexDelete, itemNameDelete) = SearchByName();
 
+                    _inventory.DeleteProduct(itemIndexDelete, itemNameDelete);
                     break;
 
                 case "5":
@@ -102,12 +94,8 @@ public class Menu
         }
     }
 
-    private static void SearchAndEdit()
+    private static void EditByIndex(int index, string itemName)
     {
-        Console.Clear();
-        var name = ReadFromUser("name");
-        var index = _inventory.GetProductIndexByName(name);
-
         if (index != -1)
         {
             Log.PrintEditMenu();
@@ -149,7 +137,7 @@ public class Menu
         else
         {
             Console.Clear();
-            Log.ItemNotExist(name);
+            Log.ItemNotExist(itemName);
         }
     }
 
@@ -165,5 +153,11 @@ public class Menu
         } while (string.IsNullOrEmpty(value));
 
         return value;
+    }
+
+    private static (int, string) SearchByName()
+    {
+        var name = ReadFromUser("name");
+        return (_inventory.GetProductIndexByName(name), name);
     }
 }
