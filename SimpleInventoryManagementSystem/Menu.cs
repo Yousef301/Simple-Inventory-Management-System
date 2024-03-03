@@ -10,7 +10,7 @@ public class Menu
         while (Int32.Parse(choice) != 6)
         {
             Console.WriteLine("======================================================");
-            MainMenu();
+            PrintMainMenu();
             Console.WriteLine("\nEnter your selection: ");
             choice = Console.ReadLine();
             if (choice == "" || !int.TryParse(choice, out _)) choice = "0";
@@ -18,19 +18,18 @@ public class Menu
             switch (choice)
             {
                 case "1":
-                    string name = ReadFromUser("name");
-                    string priceStr = ReadFromUser("price");
+                    var name = ReadFromUser("name");
 
-                    double price = CheckIfDouble(priceStr);
+                    var priceStr = ReadFromUser("price");
+                    var price = CheckIfNumeric<double>(priceStr, "price");
 
 
-                    string quantityStr = ReadFromUser("quantity");
+                    var quantityStr = ReadFromUser("quantity");
+                    var quantity = CheckIfNumeric<int>(quantityStr, "quantity");
 
-                    int quantity = CheckIfInt(quantityStr);
+                    var product = new Product(name, price, quantity);
 
-                    Product product = new Product(name, price, quantity);
-
-                    int index = _inventory.GetProductIndexByName(name);
+                    var index = _inventory.GetProductIndexByName(name);
                     if (index == -1)
                     {
                         Console.Clear();
@@ -78,7 +77,8 @@ public class Menu
                     break;
 
                 default:
-                    Console.WriteLine("Unavailable input...");
+                    Console.WriteLine(
+                        "Invalid input. Please enter 1, 2, 3, 4, 5 or 6 to select an option from the menu.");
                     break;
             }
         }
@@ -87,21 +87,21 @@ public class Menu
     private static void SearchForProduct()
     {
         Console.Clear();
-        string name = ReadFromUser("name");
-        int index = _inventory.GetProductIndexByName(name);
+        var name = ReadFromUser("name");
+        var index = _inventory.GetProductIndexByName(name);
         if (index == -1) Console.WriteLine($"{name} isn't in the inventory.");
-        else _inventory.Products[index].ProductDetails();
+        else _inventory.Products[index].PrintProductDetails();
     }
 
     private static void SearchAndEdit()
     {
         Console.Clear();
-        string name = ReadFromUser("name");
-        int index = _inventory.GetProductIndexByName(name);
+        var name = ReadFromUser("name");
+        var index = _inventory.GetProductIndexByName(name);
 
         if (index != -1)
         {
-            EditMenu();
+            PrintEditMenu();
 
             Console.WriteLine("Enter your choice: ");
             var choice = Console.ReadLine();
@@ -109,22 +109,22 @@ public class Menu
             switch (choice)
             {
                 case "1":
-                    string newName = ReadFromUser("name");
+                    var newName = ReadFromUser("name");
                     _inventory.Products[index] = new Product(newName, _inventory.Products[index].Price,
                         _inventory.Products[index].Quantity);
 
                     break;
                 case "2":
-                    string newPrice = ReadFromUser("price");
-                    double newPriceDouble = CheckIfInt(newPrice);
+                    var newPrice = ReadFromUser("price");
+                    double newPriceDouble = CheckIfNumeric<double>(newPrice, "price");
 
                     _inventory.Products[index] = new Product(_inventory.Products[index].Name, newPriceDouble,
                         _inventory.Products[index].Quantity);
 
                     break;
                 case "3":
-                    string newQuantity = ReadFromUser("quantity");
-                    int newQuantityInt = CheckIfInt(newQuantity);
+                    var newQuantity = ReadFromUser("quantity");
+                    var newQuantityInt = CheckIfNumeric<int>(newQuantity, "quantity");
 
                     _inventory.Products[index] = new Product(_inventory.Products[index].Name,
                         _inventory.Products[index].Price,
@@ -132,7 +132,7 @@ public class Menu
 
                     break;
                 default:
-                    Console.WriteLine("Unavailable input...");
+                    Console.WriteLine("Invalid input. Please enter 1, 2, or 3 to select an option from the menu.");
                     break;
             }
         }
@@ -143,66 +143,56 @@ public class Menu
         }
     }
 
-    private static double CheckIfDouble(string value)
+    private static T CheckIfNumeric<T>(string value, string attribute)
     {
-        double price;
-        while (true)
+        do
         {
-            if (double.TryParse(value, out price))
+            if (typeof(T) == typeof(int))
             {
-                break;
+                if (int.TryParse(value, out var result)) return (T)(object)result;
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                if (double.TryParse(value, out var result)) return (T)(object)result;
             }
 
-            Console.WriteLine("Invalid input. Please enter a valid price.");
-            value = ReadFromUser("price");
-        }
-
-        return price;
-    }
-
-    private static int CheckIfInt(string value)
-    {
-        int quantity;
-        while (true)
-        {
-            if (int.TryParse(value, out quantity))
-            {
-                break;
-            }
-
-            Console.WriteLine("Invalid input. Please enter a valid quantity.");
-            value = ReadFromUser("quantity");
-        }
-
-        return quantity;
+            Console.WriteLine("Invalid input. Please try again.");
+            value = ReadFromUser(attribute);
+        } while (true);
     }
 
     private static string ReadFromUser(string attribute)
     {
         Console.Clear();
-        Console.WriteLine($"Enter product {attribute}: ");
-        string? value = Console.ReadLine();
-        while (string.IsNullOrEmpty(value))
+        string? value;
+
+        do
         {
-            Console.Clear();
             Console.WriteLine($"Enter product {attribute}: ");
             value = Console.ReadLine();
-        }
+        } while (string.IsNullOrEmpty(value));
 
         return value;
     }
 
-    private static void MainMenu()
+    private static void PrintMainMenu()
     {
-        Console.WriteLine("Simple Inventory Management System\n\nSelect From the Following:\n" +
-                          "1. Add a product.\n2. View all products\n3. Edit a product.\n" +
-                          "4. Delete a product.\n5. Search for a product.\n6. Exit.");
+        Console.WriteLine("Simple Inventory Management System\n");
+        Console.WriteLine("Select from the following:");
+        Console.WriteLine("1. Add a product.");
+        Console.WriteLine("2. View all products.");
+        Console.WriteLine("3. Edit a product.");
+        Console.WriteLine("4. Delete a product.");
+        Console.WriteLine("5. Search for a product.");
+        Console.WriteLine("6. Exit.");
     }
 
-    private static void EditMenu()
+    private static void PrintEditMenu()
     {
         Console.Clear();
-        Console.WriteLine(
-            "Select from the following\n1. Edit product name.\n2. Edit product price\n3. Edit product quantity\n");
+        Console.WriteLine("Select from the following:");
+        Console.WriteLine("1. Edit product name.");
+        Console.WriteLine("2. Edit product price.");
+        Console.WriteLine("3. Edit product quantity.");
     }
 }

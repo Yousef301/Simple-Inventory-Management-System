@@ -2,49 +2,45 @@
 
 public class Product
 {
-    private string name;
-    private double price;
-    private int quantity;
+    private string _name;
+    private double _price;
+    private int _quantity;
 
     public string Name
     {
-        get => name;
-        set => name = value.Length > 30 ? value[..30] : value;
+        get => _name;
+        set => _name = TruncateString(value, 30);
     }
 
     public double Price
     {
-        get => price;
-        set => price = value > 0 ? value : price;
+        get => _price;
+        set => _price = IsValid(value, _price, 0);
     }
 
     public int Quantity
     {
-        get => quantity;
-        set => quantity = value > 0 ? value : quantity;
+        get => _quantity;
+        set => _quantity = IsValid(value, _quantity, 0);
     }
-
+    
     public Product(string name, double price, int quantity)
     {
         Name = name;
         Price = price;
         Quantity = quantity;
     }
-
-    public void IncreaseQuantity(int amount)
+    
+    public void PrintProductDetails()
     {
-        if (amount > 0) Quantity += amount;
-        else Console.WriteLine($"Couldn't add {amount}");
+        Console.WriteLine($"Product: {Name}");
+        Console.WriteLine($"Quantity: {Quantity}");
+        Console.WriteLine($"Price: {Price:C}"); // I liked :C specifier.
     }
+    
+    private static string TruncateString(string value, int maxLength) =>
+        value.Length > maxLength ? value[..maxLength] : value;
 
-    public void DecreaseQuantity(int amount)
-    {
-        if (Quantity - amount > 0) Quantity += amount;
-        else Console.WriteLine($"Can't remove {amount}. Available quantity is {Quantity}");
-    }
-
-    public void ProductDetails()
-    {
-        Console.WriteLine($"Product name -> {Name}\nQuantity -> {Quantity}\nPrice -> {Price}");
-    }
+    private static T IsValid<T>(T newValue, T oldValue, T min) where T : IComparable<T> =>
+        newValue.CompareTo(min) > 0 ? newValue : oldValue;
 }
