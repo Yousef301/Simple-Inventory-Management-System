@@ -42,9 +42,19 @@ public class Inventory
         }
     }
 
-    public void DeleteProduct(int index)
+    public void DeleteProduct(int index, string itemName)
     {
-        Products.RemoveAt(index);
+        if (index != -1)
+        {
+            Console.Clear();
+            Products.RemoveAt(index);
+            Console.WriteLine($"{itemName} removed from the inventory.");
+        }
+        else
+        {
+            Console.Clear();
+            Log.ItemNotExist(itemName);
+        }
     }
 
     public int GetProductIndexByName(string name)
