@@ -11,12 +11,12 @@ public class Inventory
         var index = GetProductIndexByName(product.Name);
         if (index != -1)
         {
-            DisplayProductAlreadyExistsMessage(product.Name);
+            Log.DisplayProductAlreadyExistsMessage(product.Name);
             return;
         }
 
         Products.Add(product);
-        DisplayProductAddedSuccessfullyMessage(product.Name);
+        Log.DisplayProductAddedSuccessfullyMessage(product.Name);
     }
 
     public void ViewAllProducts()
@@ -24,11 +24,11 @@ public class Inventory
         Console.Clear();
         if (Products.Count == 0)
         {
-            Console.WriteLine("Inventory is empty.");
+            Log.EmptyInventory();
             return;
         }
 
-        Console.WriteLine($"Inventory contains {Products.Count} item(s):");
+        Log.ItemsInInventory(Products.Count);
         var itemCnt = 1;
         foreach (var product in Products)
         {
@@ -43,10 +43,4 @@ public class Inventory
 
     public int GetProductIndexByName(string name) =>
         Products.FindIndex(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
-
-    private static void DisplayProductAlreadyExistsMessage(string productName) =>
-        Console.WriteLine($"{productName} is already in the inventory.");
-
-    private static void DisplayProductAddedSuccessfullyMessage(string productName) =>
-        Console.WriteLine($"{productName} is added successfully.");
 }

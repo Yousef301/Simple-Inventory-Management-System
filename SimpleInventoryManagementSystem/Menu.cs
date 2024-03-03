@@ -10,7 +10,7 @@ public class Menu
         while (Int32.Parse(choice) != 6)
         {
             Console.WriteLine("======================================================");
-            PrintMainMenu();
+            Log.PrintMainMenu();
             Console.WriteLine("\nEnter your selection: ");
             choice = Console.ReadLine();
             if (choice == "" || !int.TryParse(choice, out _)) choice = "0";
@@ -38,7 +38,7 @@ public class Menu
                     else
                     {
                         Console.Clear();
-                        Console.WriteLine($"{name} is already in the inventory.");
+                        Log.ItemExist(name);
                     }
 
                     break;
@@ -64,7 +64,7 @@ public class Menu
                     else
                     {
                         Console.Clear();
-                        Console.WriteLine("Item isn't in the inventory.");
+                        Log.ItemNotExist(nameDelete);
                     }
 
                     break;
@@ -77,7 +77,7 @@ public class Menu
                     break;
 
                 default:
-                    Console.WriteLine(
+                    Log.InvalidInputMessage(
                         "Invalid input. Please enter 1, 2, 3, 4, 5 or 6 to select an option from the menu.");
                     break;
             }
@@ -89,7 +89,7 @@ public class Menu
         Console.Clear();
         var name = ReadFromUser("name");
         var index = _inventory.GetProductIndexByName(name);
-        if (index == -1) Console.WriteLine($"{name} isn't in the inventory.");
+        if (index == -1) Log.ItemNotExist(name);
         else _inventory.Products[index].PrintProductDetails();
     }
 
@@ -101,7 +101,7 @@ public class Menu
 
         if (index != -1)
         {
-            PrintEditMenu();
+            Log.PrintEditMenu();
 
             Console.WriteLine("Enter your choice: ");
             var choice = Console.ReadLine();
@@ -132,14 +132,15 @@ public class Menu
 
                     break;
                 default:
-                    Console.WriteLine("Invalid input. Please enter 1, 2, or 3 to select an option from the menu.");
+                    Log.InvalidInputMessage(
+                        "Invalid input. Please enter 1, 2, or 3 to select an option from the menu.");
                     break;
             }
         }
         else
         {
             Console.Clear();
-            Console.WriteLine($"{name} isn't in the inventory");
+            Log.ItemNotExist(name);
         }
     }
 
@@ -156,7 +157,7 @@ public class Menu
                 if (double.TryParse(value, out var result)) return (T)(object)result;
             }
 
-            Console.WriteLine("Invalid input. Please try again.");
+            Log.InvalidInputMessage("Invalid input. Please try again.");
             value = ReadFromUser(attribute);
         } while (true);
     }
@@ -173,26 +174,5 @@ public class Menu
         } while (string.IsNullOrEmpty(value));
 
         return value;
-    }
-
-    private static void PrintMainMenu()
-    {
-        Console.WriteLine("Simple Inventory Management System\n");
-        Console.WriteLine("Select from the following:");
-        Console.WriteLine("1. Add a product.");
-        Console.WriteLine("2. View all products.");
-        Console.WriteLine("3. Edit a product.");
-        Console.WriteLine("4. Delete a product.");
-        Console.WriteLine("5. Search for a product.");
-        Console.WriteLine("6. Exit.");
-    }
-
-    private static void PrintEditMenu()
-    {
-        Console.Clear();
-        Console.WriteLine("Select from the following:");
-        Console.WriteLine("1. Edit product name.");
-        Console.WriteLine("2. Edit product price.");
-        Console.WriteLine("3. Edit product quantity.");
     }
 }
