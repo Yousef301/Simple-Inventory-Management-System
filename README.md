@@ -3,7 +3,7 @@
 This console-based application allows users to manage a list of products with names, prices, and quantities in stock.
 
 ## Description
-In this project, you'll create a basic inventory management system using C#. This system will enable users to perform various operations such as adding, viewing, editing, and deleting products from the inventory.
+In this project, a basic inventory management system will be created using C#. This system will enable users to perform various operations such as adding, viewing, editing, and deleting products from the inventory.
 
 ## Functionalities
 
