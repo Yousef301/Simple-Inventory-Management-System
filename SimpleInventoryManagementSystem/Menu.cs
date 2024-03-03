@@ -21,11 +21,11 @@ public class Menu
                     var name = ReadFromUser("name");
 
                     var priceStr = ReadFromUser("price");
-                    var price = CheckIfNumeric<double>(priceStr, "price");
+                    var price = Validator.CheckIfNumeric<double>(priceStr, "price");
 
 
                     var quantityStr = ReadFromUser("quantity");
-                    var quantity = CheckIfNumeric<int>(quantityStr, "quantity");
+                    var quantity = Validator.CheckIfNumeric<int>(quantityStr, "quantity");
 
                     var product = new Product(name, price, quantity);
 
@@ -116,7 +116,7 @@ public class Menu
                     break;
                 case "2":
                     var newPrice = ReadFromUser("price");
-                    double newPriceDouble = CheckIfNumeric<double>(newPrice, "price");
+                    double newPriceDouble = Validator.CheckIfNumeric<double>(newPrice, "price");
 
                     _inventory.Products[index] = new Product(_inventory.Products[index].Name, newPriceDouble,
                         _inventory.Products[index].Quantity);
@@ -124,7 +124,7 @@ public class Menu
                     break;
                 case "3":
                     var newQuantity = ReadFromUser("quantity");
-                    var newQuantityInt = CheckIfNumeric<int>(newQuantity, "quantity");
+                    var newQuantityInt = Validator.CheckIfNumeric<int>(newQuantity, "quantity");
 
                     _inventory.Products[index] = new Product(_inventory.Products[index].Name,
                         _inventory.Products[index].Price,
@@ -144,25 +144,7 @@ public class Menu
         }
     }
 
-    private static T CheckIfNumeric<T>(string value, string attribute)
-    {
-        do
-        {
-            if (typeof(T) == typeof(int))
-            {
-                if (int.TryParse(value, out var result)) return (T)(object)result;
-            }
-            else if (typeof(T) == typeof(double))
-            {
-                if (double.TryParse(value, out var result)) return (T)(object)result;
-            }
-
-            Log.InvalidInputMessage("Invalid input. Please try again.");
-            value = ReadFromUser(attribute);
-        } while (true);
-    }
-
-    private static string ReadFromUser(string attribute)
+    public static string ReadFromUser(string attribute)
     {
         Console.Clear();
         string? value;
