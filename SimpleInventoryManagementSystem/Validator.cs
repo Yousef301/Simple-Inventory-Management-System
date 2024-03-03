@@ -14,11 +14,17 @@ public class Validator
         {
             if (typeof(T) == typeof(int))
             {
-                if (int.TryParse(value, out var result)) return (T)(object)result;
+                if (int.TryParse(value, out var result))
+                {
+                    return (T)(object)result;
+                }
             }
             else if (typeof(T) == typeof(double))
             {
-                if (double.TryParse(value, out var result)) return (T)(object)result;
+                if (double.TryParse(value, out var result))
+                {
+                    return (T)(object)result;
+                }
             }
 
             Log.InvalidInputMessage("Invalid input. Please try again.");

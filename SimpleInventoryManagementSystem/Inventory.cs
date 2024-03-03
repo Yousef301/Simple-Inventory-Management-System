@@ -6,7 +6,10 @@ public class Inventory
 
     public void AddProduct(Product product)
     {
-        if (product is null) throw new ArgumentNullException(nameof(product), "Product can't be null.");
+        if (product is null)
+        {
+            throw new ArgumentNullException(nameof(product), "Product can't be null.");
+        }
 
         var index = GetProductIndexByName(product.Name);
         if (index != -1)
@@ -39,8 +42,13 @@ public class Inventory
         }
     }
 
-    public void DeleteProduct(int index) => Products.RemoveAt(index);
+    public void DeleteProduct(int index)
+    {
+        Products.RemoveAt(index);
+    }
 
-    public int GetProductIndexByName(string name) =>
-        Products.FindIndex(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
+    public int GetProductIndexByName(string name)
+    {
+        return Products.FindIndex(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
+    }
 }

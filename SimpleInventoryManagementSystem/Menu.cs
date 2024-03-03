@@ -13,7 +13,10 @@ public class Menu
             Log.PrintMainMenu();
             Console.WriteLine("\nEnter your selection: ");
             choice = Console.ReadLine();
-            if (choice == "" || !int.TryParse(choice, out _)) choice = "0";
+            if (choice == "" || !int.TryParse(choice, out _))
+            {
+                choice = "0";
+            }
 
             switch (choice)
             {
@@ -89,8 +92,14 @@ public class Menu
         Console.Clear();
         var name = ReadFromUser("name");
         var index = _inventory.GetProductIndexByName(name);
-        if (index == -1) Log.ItemNotExist(name);
-        else _inventory.Products[index].PrintProductDetails();
+        if (index == -1)
+        {
+            Log.ItemNotExist(name);
+        }
+        else
+        {
+            _inventory.Products[index].PrintProductDetails();
+        }
     }
 
     private static void SearchAndEdit()
