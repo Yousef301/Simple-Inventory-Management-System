@@ -1,8 +1,8 @@
 ﻿namespace SimpleInventoryManagementSystem;
 
-public class Log
+public class InventoryConsoleUI
 {
-    public static void PrintMainMenu()
+    public static void MainMenu()
     {
         Console.WriteLine("Simple Inventory Management System\n");
         Console.WriteLine("Select from the following:");
@@ -14,7 +14,7 @@ public class Log
         Console.WriteLine("6. Exit.");
     }
 
-    public static void PrintEditMenu()
+    public static void EditMenu()
     {
         Console.Clear();
         Console.WriteLine("Select from the following:");
@@ -33,9 +33,5 @@ public class Log
 
     public static void EmptyInventory() => Console.WriteLine("Inventory is empty.");
 
-    public static void ItemsInInventory(int items) =>
-        Console.WriteLine($"Inventory contains {items} item(s):");
-
     public static void ItemNotExist(string itemName) => Console.WriteLine($"{itemName} isn't in the inventory");
-    public static void ItemExist(string itemName) => Console.WriteLine($"{itemName} is already in the inventory.");
 }

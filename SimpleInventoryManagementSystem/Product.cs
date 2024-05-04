@@ -1,41 +1,30 @@
-﻿namespace SimpleInventoryManagementSystem;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SimpleInventoryManagementSystem;
 
 public class Product
 {
-    private string _name;
-    private double _price;
-    private int _quantity;
+    [StringLength(30, ErrorMessage = "The name must be a maximum of 30 characters.")]
+    public string Name { get; set; }
 
-    public string Name
-    {
-        get => _name;
-        set => _name = Validator.TruncateString(value, 30);
-    }
+    [Range(0.01, double.MaxValue, ErrorMessage = "Value must be greater than 0")]
+    public double Price { get; set; }
 
-    public double Price
-    {
-        get => _price;
-        set => _price = Validator.IsValid(value, _price, 0);
-    }
 
-    public int Quantity
-    {
-        get => _quantity;
-        set => _quantity = Validator.IsValid(value, _quantity, 0);
-    }
-    
+    [Range(0, int.MaxValue, ErrorMessage = "Value must be greater or equals to 0")]
+    public int Quantity { get; set; }
+
     public Product(string name, double price, int quantity)
     {
         Name = name;
         Price = price;
         Quantity = quantity;
     }
-    
-    public void PrintProductDetails()
-    {
-        Console.WriteLine($"Product: {Name}");
-        Console.WriteLine($"Quantity: {Quantity}");
-        Console.WriteLine($"Price: {Price:C}"); // I liked :C specifier.
-    }
 
+    public void GetProductDetails()
+    {
+        Console.WriteLine($"Product name: {Name}");
+        Console.WriteLine($"Quantity: {Quantity}");
+        Console.WriteLine($"Price: {Price:C}");
+    }
 }

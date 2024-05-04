@@ -2,63 +2,49 @@
 
 public class Inventory
 {
-    public List<Product> Products { get; } = new();
+    private List<Product> products;
+    private int itemsCount;
+
+    public Inventory()
+    {
+        products = new List<Product>();
+    }
 
     public void AddProduct(Product product)
     {
-        if (product is null)
+        products.Add(product);
+        itemsCount += 1;
+    }
+
+    public bool DeleteProduct(string itemName)
+    {
+        var product = products.FirstOrDefault(p => string.Equals(p.Name, itemName, StringComparison.OrdinalIgnoreCase));
+        if (product != null)
         {
-            throw new ArgumentNullException(nameof(product), "Product can't be null.");
+            products.Remove(product);
+            itemsCount -= 1;
+            return true;
         }
 
-        var index = GetProductIndexByName(product.Name);
-        if (index != -1)
-        {
-            Log.DisplayProductAlreadyExistsMessage(product.Name);
-            return;
-        }
+        return false;
+    }
 
-        Products.Add(product);
-        Log.DisplayProductAddedSuccessfullyMessage(product.Name);
+    public Product? GetProductByName(string itemName)
+    {
+        return products.FirstOrDefault(p => string.Equals(p.Name, itemName, StringComparison.OrdinalIgnoreCase));
     }
 
     public void ViewAllProducts()
     {
-        Console.Clear();
-        if (Products.Count == 0)
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        for (int i = 0; i < products.Count; i++)
         {
-            Log.EmptyInventory();
-            return;
+            ConsoleDisplay.MessageDisplay($"\nProduct {i + 1} Details:");
+            products[i].GetProductDetails();
         }
 
-        Log.ItemsInInventory(Products.Count);
-        var itemCnt = 1;
-        foreach (var product in Products)
-        {
-            Console.WriteLine($"Item {itemCnt}:");
-            product.PrintProductDetails();
-            Console.WriteLine();
-            itemCnt++;
-        }
+        Console.ResetColor();
     }
 
-    public void DeleteProduct(int index, string itemName)
-    {
-        if (index != -1)
-        {
-            Console.Clear();
-            Products.RemoveAt(index);
-            Console.WriteLine($"{itemName} removed from the inventory.");
-        }
-        else
-        {
-            Console.Clear();
-            Log.ItemNotExist(itemName);
-        }
-    }
-
-    public int GetProductIndexByName(string name)
-    {
-        return Products.FindIndex(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
-    }
+    public int GetNumberOfItems() => itemsCount;
 }
