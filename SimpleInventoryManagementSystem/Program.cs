@@ -1,11 +1,37 @@
-﻿namespace SimpleInventoryManagementSystem;
+﻿using System.Data.SqlClient;
+using SimpleInventoryManagementSystem.Helpers;
+using SimpleInventoryManagementSystem.Repositories;
+
+namespace SimpleInventoryManagementSystem;
 
 public class Program
 {
-    private static Inventory _inventory = new();
+    private static Inventory _inventory;
 
     public static void Main()
     {
+        var connectionSettings = AppSettingsManager.GetConnectionString("MongoDBConnectionStrings");
+
+        var productRepository = new ProductRepositoryMongoDbContext(connectionSettings["ConnectionString"],
+            connectionSettings["DatabaseName"]);
+
+        // productRepository.ViewAllProducts();
+
+        // var connectionSettings = AppSettingsManager.GetConnectionString("MSServerConnectionStrings");
+        //
+        // var connectionStringBuilder = new SqlConnectionStringBuilder
+        // {
+        //     DataSource = connectionSettings["DataSource"],
+        //     InitialCatalog = connectionSettings["InitialCatalog"],
+        //     IntegratedSecurity = connectionSettings["IntegratedSecurity"] == "True"
+        // };
+        //
+        // string connectionString = connectionStringBuilder.ConnectionString;
+        // var productRepository = new ProductRepositoryMsServer(connectionString);
+
+
+        _inventory = new Inventory(productRepository.GetAllProducts());
+
         string? choice;
         do
         {
@@ -17,14 +43,16 @@ public class Program
             {
                 case "1":
                     ConsoleDisplay.ClearScreen();
-                    var result = AddNewProductFromUserInput();
+                    var result = AddNewProductFromUserInput(productRepository);
                     ConsoleDisplay.SetForegroundColor(ConsoleColor.Green);
                     if (result.Item1) InventoryConsoleUI.DisplayProductAddedSuccessfullyMessage(result.Item2);
                     ConsoleDisplay.ResetColor();
                     break;
                 case "2":
                     ConsoleDisplay.ClearScreen();
-                    if (_inventory.GetNumberOfItems() == 0)
+
+                    // _inventory.GetNumberOfItems() == 0
+                    if (productRepository.GetNumberOfItems() == 0)
                     {
                         ConsoleDisplay.SetForegroundColor(ConsoleColor.DarkBlue);
                         InventoryConsoleUI.EmptyInventory();
@@ -32,7 +60,19 @@ public class Program
                         break;
                     }
 
-                    _inventory.ViewAllProducts();
+                    // _inventory.ViewAllProducts();
+                    var products = productRepository.GetAllProducts();
+
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    for (int i = 0; i < products.Count; i++)
+                    {
+                        ConsoleDisplay.MessageDisplay($"\nProduct {i + 1} Details:");
+                        products[i].GetProductDetails();
+                    }
+
+                    Console.ResetColor();
+
+
                     break;
                 case "3":
                     ConsoleDisplay.ClearScreen();
@@ -40,7 +80,7 @@ public class Program
 
                     var productName = ConsoleInputReader.ReadInput();
 
-                    UpdateProductByName(productName);
+                    UpdateProductByName(productName, productRepository);
 
                     break;
                 case "4":
@@ -51,6 +91,7 @@ public class Program
 
                     if (_inventory.DeleteProduct(productToDeleteName))
                     {
+                        productRepository.DeleteProduct(productToDeleteName);
                         ConsoleDisplay.SetForegroundColor(ConsoleColor.Green);
                         ConsoleDisplay.MessageDisplay($"{productToDeleteName} deleted successfully.");
                         ConsoleDisplay.ResetColor();
@@ -69,7 +110,8 @@ public class Program
 
                     var productToSearchName = ConsoleInputReader.ReadInput();
 
-                    var product = _inventory.GetProductByName(productToSearchName);
+                    // var product = _inventory.GetProductByName(productToSearchName);
+                    var product = productRepository.GetProductByName(productToSearchName);
                     if (product != null)
                     {
                         ConsoleDisplay.SetForegroundColor(ConsoleColor.Cyan);
@@ -97,7 +139,7 @@ public class Program
         } while (choice != "6");
     }
 
-    private static (bool, string) AddNewProductFromUserInput()
+    private static (bool, string) AddNewProductFromUserInput(IProductRepository productRepository)
     {
         ConsoleDisplay.MessageDisplay("Enter details for the new product:");
         ConsoleDisplay.MessageDisplay("Name: ", false);
@@ -146,10 +188,11 @@ public class Program
         }
 
         _inventory.AddProduct(product);
+        productRepository.AddProduct(product);
         return (true, productName);
     }
 
-    private static void UpdateProductByName(string name)
+    private static void UpdateProductByName(string name, IProductRepository productRepository)
     {
         var product = _inventory.GetProductByName(name);
 
@@ -167,13 +210,13 @@ public class Program
         switch (choice)
         {
             case "1":
-                UpdateProductName(product);
+                UpdateProductName(product, productRepository);
                 break;
             case "2":
-                UpdateProductPrice(product);
+                UpdateProductPrice(product, productRepository);
                 break;
             case "3":
-                UpdateProductQuantity(product);
+                UpdateProductQuantity(product, productRepository);
                 break;
             default:
                 ConsoleDisplay.SetForegroundColor(ConsoleColor.Red);
@@ -184,7 +227,7 @@ public class Program
         }
     }
 
-    private static void UpdateProductName(Product product)
+    private static void UpdateProductName(Product product, IProductRepository productRepository)
     {
         ConsoleDisplay.MessageDisplay("Enter new name: ", false);
         var newProductName = ConsoleInputReader.ReadInput();
@@ -206,19 +249,21 @@ public class Program
             return;
         }
 
+        productRepository.UpdateProduct(product.Name, "name", newProductName);
         product.Name = newProductName;
         ConsoleDisplay.SetForegroundColor(ConsoleColor.Green);
         ConsoleDisplay.MessageDisplay("Name updated successfully.");
         ConsoleDisplay.ResetColor();
     }
 
-    private static void UpdateProductPrice(Product product)
+    private static void UpdateProductPrice(Product product, IProductRepository productRepository)
     {
         ConsoleDisplay.MessageDisplay("Enter new price: ", false);
         var newProductPrice = ConsoleInputReader.ReadInput();
 
         if (double.TryParse(newProductPrice, out double newPrice) && ValidationService.IsValidProductPrice(newPrice))
         {
+            productRepository.UpdateProduct(product.Name, "price", newProductPrice);
             product.Price = newPrice;
             ConsoleDisplay.SetForegroundColor(ConsoleColor.Green);
             ConsoleDisplay.MessageDisplay("Price updated successfully.");
@@ -232,7 +277,7 @@ public class Program
         }
     }
 
-    private static void UpdateProductQuantity(Product product)
+    private static void UpdateProductQuantity(Product product, IProductRepository productRepository)
     {
         ConsoleDisplay.MessageDisplay("Enter new quantity: ", false);
         var newProductQuantity = ConsoleInputReader.ReadInput();
@@ -240,6 +285,7 @@ public class Program
         if (int.TryParse(newProductQuantity, out int newQuantity) &&
             ValidationService.IsValidProductQuantity(newQuantity))
         {
+            productRepository.UpdateProduct(product.Name, "quantity", newProductQuantity);
             product.Quantity = newQuantity;
             ConsoleDisplay.SetForegroundColor(ConsoleColor.Green);
             ConsoleDisplay.MessageDisplay("Quantity updated successfully.");

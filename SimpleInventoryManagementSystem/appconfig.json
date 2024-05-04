@@ -1,0 +1,11 @@
+{
+  "MSServerConnectionStrings": {
+    "DataSource": "PLUTO",
+    "InitialCatalog": "Simple Inventory Management System",
+    "IntegratedSecurity": true
+  },
+  "MongoDBConnectionStrings": {
+    "ConnectionString": "mongodb://localhost:27017",
+    "DatabaseName": "SimpleInventoryManagementSystem"
+  }
+}

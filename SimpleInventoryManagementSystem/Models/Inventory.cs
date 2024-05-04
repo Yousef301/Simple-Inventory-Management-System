@@ -1,6 +1,8 @@
-﻿namespace SimpleInventoryManagementSystem;
+﻿using SimpleInventoryManagementSystem.Repositories;
 
-public class Inventory
+namespace SimpleInventoryManagementSystem;
+
+public class Inventory : IProductRepository
 {
     private List<Product> products;
     private int itemsCount;
@@ -8,6 +10,12 @@ public class Inventory
     public Inventory()
     {
         products = new List<Product>();
+    }
+
+    public Inventory(List<Product> products)
+    {
+        this.products = products;
+        itemsCount = products.Count;
     }
 
     public void AddProduct(Product product)
@@ -44,6 +52,11 @@ public class Inventory
         }
 
         Console.ResetColor();
+    }
+
+    public void UpdateProduct(string itemName, string propertyName, object newValue)
+    {
+        throw new NotImplementedException();
     }
 
     public int GetNumberOfItems() => itemsCount;
