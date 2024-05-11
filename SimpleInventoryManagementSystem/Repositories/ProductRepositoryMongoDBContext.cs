@@ -8,8 +8,8 @@ public class ProductRepositoryMongoDbContext : IProductRepository
 
     public ProductRepositoryMongoDbContext(string connectionString, string dbName)
     {
-        var client = new MongoClient("mongodb://localhost:27017");
-        db = client.GetDatabase("SimpleInventoryManagementSystem");
+        var client = new MongoClient(connectionString);
+        db = client.GetDatabase(dbName);
     }
 
     private IMongoCollection<Product> Products => db.GetCollection<Product>("products");
