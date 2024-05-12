@@ -52,13 +52,13 @@ public class ProductRepositoryMongoDbContext : IProductRepository
         switch (propertyName.ToLower())
         {
             case "name":
-                update = Builders<Product>.Update.Set(p => p.Name, (string)newValue);
+                update = Builders<Product>.Update.Set(p => p.Name, newValue);
                 break;
             case "price":
-                update = Builders<Product>.Update.Set(p => p.Price, (double)newValue);
+                update = Builders<Product>.Update.Set(p => p.Price, newValue);
                 break;
             case "quantity":
-                update = Builders<Product>.Update.Set(p => p.Quantity, (int)newValue);
+                update = Builders<Product>.Update.Set(p => p.Quantity, newValue);
                 break;
             default:
                 throw new ArgumentException("Invalid property name specified.");
