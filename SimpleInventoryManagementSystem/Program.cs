@@ -10,25 +10,11 @@ public class Program
 
     public static void Main()
     {
-        var connectionSettings = AppSettingsManager.GetConnectionString("MongoDBConnectionStrings");
+        var databaseType = AppSettingsManager.GetDatabaseType("Database");
 
-        var productRepository = new ProductRepositoryMongoDbContext(connectionSettings["ConnectionString"],
-            connectionSettings["DatabaseName"]);
+        var productRepositoryFactory = new ProductRepositoryFactory();
 
-        // productRepository.ViewAllProducts();
-
-        // var connectionSettings = AppSettingsManager.GetConnectionString("MSServerConnectionStrings");
-        //
-        // var connectionStringBuilder = new SqlConnectionStringBuilder
-        // {
-        //     DataSource = connectionSettings["DataSource"],
-        //     InitialCatalog = connectionSettings["InitialCatalog"],
-        //     IntegratedSecurity = connectionSettings["IntegratedSecurity"] == "True"
-        // };
-        //
-        // string connectionString = connectionStringBuilder.ConnectionString;
-        // var productRepository = new ProductRepositoryMsServer(connectionString);
-
+        var productRepository = productRepositoryFactory.CreateProductRepository(databaseType);
 
         _inventory = new Inventory(productRepository.GetAllProducts());
 

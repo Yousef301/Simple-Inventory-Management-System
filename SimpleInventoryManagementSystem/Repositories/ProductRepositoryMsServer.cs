@@ -2,7 +2,7 @@
 
 namespace SimpleInventoryManagementSystem.Repositories;
 
-public class ProductRepositoryMsServer : IProductRepository
+public class ProductRepositoryMsServer : IProductRepositoryDb
 {
     private readonly string _connectionString;
 

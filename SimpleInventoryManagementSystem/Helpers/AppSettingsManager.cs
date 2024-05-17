@@ -37,4 +37,9 @@ public class AppSettingsManager
 
         return connectionStringDictionary;
     }
+
+    public static string? GetDatabaseType(string key)
+    {
+        return _configuration[key];
+    }
 }

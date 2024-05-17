@@ -2,15 +2,20 @@
 
 namespace SimpleInventoryManagementSystem.Repositories;
 
-public class ProductRepositoryMongoDbContext : IProductRepository
+public class ProductRepositoryMongoDbContext : IProductRepositoryDb
 {
     private IMongoDatabase db;
 
-    public ProductRepositoryMongoDbContext(string connectionString, string dbName)
+    public ProductRepositoryMongoDbContext(string connectionDetails)
     {
+        var connectionStringParts = connectionDetails.Split(';');
+        var connectionString = connectionStringParts[0];
+        var dbName = connectionStringParts[1];
+
         var client = new MongoClient(connectionString);
         db = client.GetDatabase(dbName);
     }
+
 
     private IMongoCollection<Product> Products => db.GetCollection<Product>("products");
 
